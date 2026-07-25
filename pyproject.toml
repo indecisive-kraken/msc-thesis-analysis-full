@@ -1,0 +1,40 @@
+[build-system]
+requires = ['setuptools==82.0.1']
+build-backend = 'setuptools.build_meta'
+
+[project]
+name = "msc-thesis-analysis-full"
+version = "0.0.1"
+author = ["George Kafkas geokafks@gmail.com"]
+keywords = ["Social Media", "Quality of Life"]
+license = "MIT"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "numpy",
+    "pandas",
+    "scipy",
+    "statsmodels",
+    "pathlib",
+#    "scikit-bio",
+    "mord",
+    "scikit-learn",
+    "patsy",
+    "matplotlib",
+    "seaborn",
+    "pingouin",
+    "fitter",
+    "tqdm",
+    "copulas",
+    "plotnine",
+    "gower",
+    "openpyxl"
+]
+
+[tool.setuptools]
+py-modules = ['msc-thesis-analysis-full']
+
+[tool.setuptools.package-data]
+msc-thesis-analysis-full =[
+    'scripts/data/encoded_data.xlsx'
+    ]
