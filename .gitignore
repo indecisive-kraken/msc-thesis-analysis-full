@@ -2,5 +2,5 @@
 .idea/
 .venv/
 build/
-msc_thesis_scripts_repository.egg-info/
+msc_thesis_analysis_full.egg-info.egg-info/
 __pycache__/
