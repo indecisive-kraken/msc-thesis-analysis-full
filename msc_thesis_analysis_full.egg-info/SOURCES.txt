@@ -1,8 +1,0 @@
-LICENSE.md
-README.md
-pyproject.toml
-msc_thesis_analysis_full.egg-info/PKG-INFO
-msc_thesis_analysis_full.egg-info/SOURCES.txt
-msc_thesis_analysis_full.egg-info/dependency_links.txt
-msc_thesis_analysis_full.egg-info/requires.txt
-msc_thesis_analysis_full.egg-info/top_level.txt
