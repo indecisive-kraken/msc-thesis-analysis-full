@@ -1,0 +1,6 @@
+*.ipynb_checkpoints
+.idea/
+.venv/
+build/
+msc_thesis_scripts_repository.egg-info/
+__pycache__/
