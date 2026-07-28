@@ -1,24 +1,15 @@
-import os
-import threading
-import asyncio
-import inspect
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
-import statsmodels.api as sm
 import statsmodels.formula.api as smf
 import statsmodels.stats.api as sms
 from statsmodels.compat import lzip
-from scipy.stats import shapiro
-from statsmodels.formula.api import ols
-from statsmodels.stats.stattools import omni_normtest
 from statsmodels.stats.stattools import durbin_watson
 from statsmodels.stats.outliers_influence import variance_inflation_factor
-from scipy import stats
 from scipy.stats import spearmanr
+from scipy.stats import pearsonr
 from patsy import dmatrices
-from typing import List, Tuple
 
 # -- Table of Contents --
 # 1. -- Check if the file is of valid type, after that Pandas loads the data -- (you can add more file suffixes with an additional if statement and with filepaths = ['.xlsx', 'xlsm',])
@@ -39,7 +30,7 @@ data = '/home/nopesferatu/Desktop/Thesis_R2_v2/analysis/data/o1_maybe_lates.xlsx
 df = pd.read_excel(data, sheet_name='INDIV_VAR_REG')
 
 print(df.info())
-df.head()
+df.head() 
 #
 # #2
 mean = np.mean(df)
@@ -156,5 +147,19 @@ for var in independent_vars:
 for var, (corr, p) in spearman_corrs.items():
     print(f"Spearman correlation between predictor and {var}: {corr}, p-value: {p}")
 
+independent_vars = df.columns[df.columns != 'BSMAS']
+dependent_vars = ['D1', 'D2', 'D3', 'D4', 'BSMAS']
 
+for dep in dependent_vars:
+    y = df[dep]
+    pearson_corrs = {}
+
+    for var in independent_vars:
+        corr, p = pearsonr(y, df[var])
+        spearman_corrs[var] = (corr, p)
+
+
+    print(f"\nSpearman correlations with {dep}:")
+    for var, (corr, p) in spearman_corrs.items():
+        print(f"  - {var}: correlation = {corr}, p-value = {p}")
 print("Analysis Finished, please see the generated files & data")

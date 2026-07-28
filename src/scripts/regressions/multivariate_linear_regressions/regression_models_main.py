@@ -25,11 +25,8 @@ from scripts.data.get_data_path import open_data_file
 # 6. -- Test for autocorrelation of residuals (Durbin-Watson) --
 # 7. -- Calculate & Print the Spearman Rank correlation and corresponding p-value --
 
-# data = input('Please specify the Excel file with the data: ')
-# df = pd.read_excel(data, sheet_name='INDIV_VAR_REG')
-
 def regression_models_main():
-    df = open_data_file()
+    df = open_data_file().dropna()
 
     print(df.info())
     df.head()
@@ -57,70 +54,71 @@ def regression_models_main():
     print(model3.summary())
     print(model4.summary())
 
-
-    #Reduced Model
-    model = smf.ols(
-        'Q1 ~ Q2 + D1 + D2 + D3 + D4 + BSMAS + Gender + Age_Group +Time_Spent_M + Time_Spent_H + Instagram_index + Facebook_index + TikTok_index + H_Problem',
-        df).fit()
-
-    #extract coefficient distributions
-
-    w_sm_mu = model.params
-    w_sm_std = np.sqrt(np.diag(model.normalized_cov_params))
-
-    print(w_sm_mu)
-    print(w_sm_std)
-
-    w_bs = []
-    n = x.shape[0]
-    for i in range(10000):
-        samp = np.random.randint(n, size=n)
-        results_bs = sm.OLS(y.loc[samp], x.loc[samp,:]).fit()
-        w_bs.append(results_bs.params)
-
-    w_bs = np.array(w_bs)
-
-    # summarize coefficient distributions
-    w_bs_mu = np.mean(w_bs, axis=0)
-    w_bs_std = np.std(w_bs, axis=0)
-
-    coefficients = pd.concat([w_sm_mu,
-    pd.DataFrame(data=w_bs_mu, index=x.columns),
-    pd.DataFrame(data=w_sm_std, index=x.columns),
-    pd.DataFrame(data=w_bs_std, index=x.columns)], axis=1)
-
-    coefficients.columns = ['statsmodels_mu', 'bootstrapped_mu', 'statsmodels_std', 'bootstrapped_std']
-
-    print(coefficients.to_string())
-
-    fig, ax = plt.subplots(ncols=2, figsize=(10,6))
-    ax[0].plot(range(x.shape[1]), w_sm_mu, label='statsmodels')
-    ax[0].plot(range(x.shape[1]), w_bs_mu, 'x', label='boostrapped')
-    ax[0].set_ylabel('Mean')
-    ax[1].plot(range(x.shape[1]), w_sm_std, label='statsmodels')
-    ax[1].plot(range(x.shape[1]), w_bs_std, 'x', label='boostrapped')
-    ax[1].set_ylabel('Standard deviation')
-    plt.legend()
-    plt.tight_layout()
-    plt.savefig('bootst_vs_theo100000.png')
-
-    n_boot = 1000
-    coef_samples = []
-
-    for _ in range(n_boot):
-        X_resampled, y_resampled = resample(x, y) #resample rows
-        model = sm.OLS(y_resampled, X_resampled).fit()
-        print(model.summary)
-        np.append(coef_samples, model.params) #https://careerkarma.com/blog/python-attributeerror-numpy-append/
-
-        coef_samples = pd.Series(coef_samples)
-        ci_lower = coef_samples.quantile(q = 0.025)
-        ci_upper = coef_samples.quantile(q = 0.975)
-        print(ci_lower, ci_upper)
-
     names = ['Lagrange multiplier statistic', 'p-value', 'f-value', 'f p-value']
+
     bp_test = sms.het_breuschpagan(model.resid, model.model.exog)
+    bp_test2 = sms.het_breuschpagan(model2.resid, model2.model.exog)
+    bp_test3 = sms.het_breuschpagan(model3.resid, model3.model.exog)
+    bp_test4 = sms.het_breuschpagan(model4.resid, model4.model.exog)
+
     print("Result of Breusch-Pagan Test (Heteroscedasticity): ", lzip(names, bp_test))
+    print("Result of Breusch-Pagan Test (Heteroscedasticity): ", lzip(names, bp_test2))
+    print("Result of Breusch-Pagan Test (Heteroscedasticity): ", lzip(names, bp_test3))
+    print("Result of Breusch-Pagan Test (Heteroscedasticity): ", lzip(names, bp_test4))
+    # extract coefficient distributions
+
+    # w_sm_mu = model.params
+    # w_sm_std = np.sqrt(np.diag(model.normalized_cov_params))
+    #
+    # print(w_sm_mu)
+    # print(w_sm_std)
+    #
+    # w_bs = []
+    # n = x.shape[0]
+    # for i in range(10000):
+    #     samp = np.random.randint(n, size=n)
+    #     results_bs = sm.OLS(y.loc[samp], x.loc[samp, :]).fit()
+    #     w_bs.append(results_bs.params)
+    #
+    # w_bs = np.array(w_bs)
+
+    # # summarize coefficient distributions
+    # w_bs_mu = np.mean(w_bs, axis=0)
+    # w_bs_std = np.std(w_bs, axis=0)
+    #
+    # coefficients = pd.concat([w_sm_mu,
+    #                           pd.DataFrame(data=w_bs_mu, index=x.columns),
+    #                           pd.DataFrame(data=w_sm_std, index=x.columns),
+    #                           pd.DataFrame(data=w_bs_std, index=x.columns)], axis=1)
+    #
+    # coefficients.columns = ['statsmodels_mu', 'bootstrapped_mu', 'statsmodels_std', 'bootstrapped_std']
+    #
+    # print(coefficients.to_string())
+    #
+    # fig, ax = plt.subplots(ncols=2, figsize=(10, 6))
+    # ax[0].plot(range(x.shape[1]), w_sm_mu, label='statsmodels')
+    # ax[0].plot(range(x.shape[1]), w_bs_mu, 'x', label='boostrapped')
+    # ax[0].set_ylabel('Mean')
+    # ax[1].plot(range(x.shape[1]), w_sm_std, label='statsmodels')
+    # ax[1].plot(range(x.shape[1]), w_bs_std, 'x', label='boostrapped')
+    # ax[1].set_ylabel('Standard deviation')
+    # plt.legend()
+    # plt.tight_layout()
+    # plt.savefig('bootst_vs_theo100000.png')
+    #
+    # n_boot = 1000
+    # coef_samples = []
+    #
+    # for _ in range(n_boot):
+    #     X_resampled, y_resampled = resample(x, y)  # resample rows
+    #     model = sm.OLS(y_resampled, X_resampled).fit()
+    #     print(model.summary)
+    #     np.append(coef_samples, model.params)  # https://careerkarma.com/blog/python-attributeerror-numpy-append/
+    #
+    #     coef_samples = pd.Series(coef_samples)
+    #     ci_lower = coef_samples.quantile(q=0.025)
+    #     ci_upper = coef_samples.quantile(q=0.975)
+    #     print(ci_lower, ci_upper)
 
     Y, X = dmatrices(
         'Q1 ~ Q2 + D1 + D2 + D3 + D4 + BSMAS + Gender + Education_L +Education_P + Education_Highest + Attach_S + Attach_S_N + Age_Group +Time_Spent_M + Time_Spent_H +Empl_st_sfemp +Empl_st_employee +Empl_st_st +Empl_st_oth + Instagram_index + Facebook_index + TikTok_index + H_Problem',
@@ -149,6 +147,12 @@ def regression_models_main():
     pearson_corrs = {}
 
     for var in independent_vars:
+
+        print(df['BSMAS'].info)
+
+        df['BSMAS'] = pd.to_numeric(df['BSMAS'], errors='coerce')
+        df[var] = pd.to_numeric(df[var], errors='coerce')
+
         corr, p = pearsonr(df['BSMAS'], df[var])
         pearson_corrs[var] = (corr, p)
 
@@ -156,28 +160,28 @@ def regression_models_main():
         print(f"Pearson correlation between predictor and {var}: {corr}, p-value: {p}")
 
     for var in independent_vars:
-        corr, p = pearsonr(df['D1'], df[var])
+        corr, p = pearsonr(df['D1'].dropna(), df[var])
         pearson_corrs[var] = (corr, p)
 
     for var, (corr, p) in pearson_corrs.items():
         print(f"Pearson correlation between predictor and {var}: {corr}, p-value: {p}")
 
     for var in independent_vars:
-        corr, p = pearsonr(df['D2'], df[var])
+        corr, p = pearsonr(df['D2'].dropna(), df[var])
         pearson_corrs[var] = (corr, p)
 
     for var, (corr, p) in pearson_corrs.items():
         print(f"Pearson correlation between predictor and {var}: {corr}, p-value: {p}")
 
     for var in independent_vars:
-        corr, p = pearsonr(df['D3'], df[var])
+        corr, p = pearsonr(df['D3'].dropna(), df[var])
         pearson_corrs[var] = (corr, p)
 
     for var, (corr, p) in pearson_corrs.items():
         print(f"Pearson correlation between predictor and {var}: {corr}, p-value: {p}")
 
     for var in independent_vars:
-        corr, p = pearsonr(df['D4'], df[var])
+        corr, p = pearsonr(df['D4'].dropna(), df[var])
         pearson_corrs[var] = (corr, p)
 
     for var, (corr, p) in pearson_corrs.items():
