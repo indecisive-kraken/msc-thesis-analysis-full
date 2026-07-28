@@ -150,8 +150,10 @@ def regression_models_main():
 
         print(df['BSMAS'].info)
 
+        # -- Courtesy of Gemini --
         df['BSMAS'] = pd.to_numeric(df['BSMAS'], errors='coerce')
         df[var] = pd.to_numeric(df[var], errors='coerce')
+        #   --                --
 
         corr, p = pearsonr(df['BSMAS'], df[var])
         pearson_corrs[var] = (corr, p)
