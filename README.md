@@ -2,7 +2,7 @@
 
 ## Overview
 
-## 🎓 This repository contains the python scripts used for the statistical analysis of the master's thesis. The repository contains two parts:
+- ### This repository contains the python scripts used for the statistical analysis of the master's thesis. The repository contains two parts:
 
 - ### the statistical analysis scripts that provided the published results
 - ### the scripts used to further extend the statistical analysis beyond the scope of the thesis (for purposes of analyzing the collected data).
