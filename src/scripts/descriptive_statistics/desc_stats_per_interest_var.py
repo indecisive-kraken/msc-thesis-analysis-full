@@ -8,9 +8,7 @@ import pandas as pd
 from scipy import stats
 from scipy.stats import mannwhitneyu
 from pathlib import Path
-from dotenv import load_dotenv
 
-load_dotenv()
 data = os.getenv("DATA")
 warnings.filterwarnings('ignore')
 
@@ -300,7 +298,7 @@ combined_emp_df = pd.concat(
 )
 combined_emp_df.to_csv('summary_stats_employment_all.csv')
 
----------------------- SEPARATION HERE -------------------------------
+#---------------------- SEPARATION HERE -------------------------------
 
 
 

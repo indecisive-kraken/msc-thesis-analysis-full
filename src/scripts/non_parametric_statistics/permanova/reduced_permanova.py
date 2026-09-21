@@ -4,6 +4,7 @@ import gower
 import warnings
 import numpy as np
 import pandas as pd
+from pandas.core.interchange.dataframe_protocol import DataFrame
 from scipy import stats
 from skbio.stats.distance import permanova
 from skbio.stats.distance import permdisp

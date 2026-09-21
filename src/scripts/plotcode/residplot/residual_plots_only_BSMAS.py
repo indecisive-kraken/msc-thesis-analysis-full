@@ -17,19 +17,14 @@ def residual_plots():
     model3 = smf.ols('D3 ~ D1 + D2 + D4 + BSMAS',df).fit()
     model4 = smf.ols('D4 ~ D1 + D2 + D3 + BSMAS',df).fit()
 
-    X_model1 = ['D2','D3','D4','BSMAS']
-    X_model2 = ['D1','D3','D4','BSMAS']
-    X_model3 = ['D1','D2','D4','BSMAS']
-    X_model4 = ['D1','D2','D3','BSMAS']
-
-    X_array = [X_model1, X_model2, X_model3, X_model4]
     model_array = [model, model2, model3, model4]
+    model_y = ['D1', 'D2', 'D3', 'D4']
     counter = 1
 
-    for m, xi in zip(model_array, X_array):
-        for i in xi:
-            fig1 = plt.figure(figsize=(14, 8))
-            fig1 = sm.graphics.plot_regress_exog(m, i, fig=fig1)
-            plt.savefig(f'residplot{str(counter)}-{i}-all.png')
+    for m, y in zip(model_array, model_y):
+        fig1 = plt.figure(figsize=(14, 8))
+        fig1 = sm.graphics.plot_regress_exog(m, 'BSMAS', fig=fig1)
+        plt.savefig(f'residplot-{str(counter)}-{y}-BSMAS.png')
         counter += 1
+
 residual_plots()
