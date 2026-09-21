@@ -1,5 +1,7 @@
 # Python Scripts used in Investigating the impact of Social Media to the Quality of Life of its Users 🤖 📈
 
+## Overview
+
 ## 🎓 This repository contains the python scripts used for the statistical analysis of the master's thesis. The repository contains two parts:
 
 - ### the statistical analysis scripts that provided the published results
