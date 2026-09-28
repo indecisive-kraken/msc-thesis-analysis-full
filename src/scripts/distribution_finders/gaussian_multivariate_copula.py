@@ -20,13 +20,10 @@ from patsy import dmatrices
 from copulas.multivariate import GaussianMultivariate
 from sklearn.model_selection import train_test_split
 import warnings
-from dotenv import load_dotenv
+from get_data+path import open_data_file
 
 warnings.filterwarnings('ignore')
-load_dotenv()
-data = os.getenv("DATA") 
 
-df = pd.read_excel(data, sheet_name='ENCODED_DATA')
 
 print(df.info())
 df.head()
