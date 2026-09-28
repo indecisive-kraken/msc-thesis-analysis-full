@@ -16,46 +16,48 @@ from scipy import stats
 from scipy.stats import spearmanr
 from statsmodels.stats.outliers_influence import OLSInfluence
 from patsy import dmatrices
+from get_data_path import open_data_file
 
-# data = input('Please specify the Excel file with the data: ')
-data = "/home/nopesferatu/Desktop/Thesis_R2_v2/analysis/data/o1_maybe_lates.xlsx"
-df = pd.read_excel(data, sheet_name='INDIV_VAR_REG')
+# -- THESE WERE NOT NEEDED BUT IN GENERAL IT IS IDEAL TO DO CHECKS TO EVALUATE MODELS RATHER THAN RUNNING THEM BLIND AND PICKING THE ONES THAT GENERATE THE BEST RESULTS --
 
-print(df.info())
-df.head()
+def before_regression_checks():
 
-y = df[['D1']]
-x = df[['D1', 'D2', 'D3', 'D4', 'BSMAS', 'Gender', 'Education_L', 'Education_P', 'Education_Highest', 'Age_Group',
-          'Time_Spent_M', 'Time_Spent_H', 'Empl_st_sfemp', 'Empl_st_employee', 'Empl_st_st', 'Empl_st_oth',
-          'Instagram_index', 'Facebook_index', 'TikTok_index', 'YouTube_Index']]
+    df = open_data_file().dropna()
+    print(df.info())
+    df.head()
 
-model = smf.ols("D1 ~ BSMAS +  Time_Spent_H + Time_Spent_M", df).fit()
-model2 =  smf.ols('D2 ~ BSMAS + Time_Spent_H + Time_Spent_M', df).fit()
-model3 = smf.ols('D3 ~ BSMAS', df).fit()
-model4 = smf.ols('D4 ~ BSMAS + Education_L + Education_P + Education_Highest',df).fit()
-model5 = smf.ols(formula='BSMAS ~ Age_Group + Time_Spent_M + Time_Spent_H + Facebook_index', data=x).fit()
+    y = df[['D1']]
+    x = df[['D1', 'D2', 'D3', 'D4', 'BSMAS', 'Gender', 'Education_L', 'Education_P', 'Education_Highest', 'Age_Group',
+            'Time_Spent_M', 'Time_Spent_H', 'Empl_st_sfemp', 'Empl_st_employee', 'Empl_st_st', 'Empl_st_oth',
+            'Instagram_index', 'Facebook_index', 'TikTok_index', 'YouTube_Index']]
 
-list_models = [model, model2, model3, model4, model5]
+    model = smf.ols("D1 ~ BSMAS +  Time_Spent_H + Time_Spent_M", df).fit()
+    model2 =  smf.ols('D2 ~ BSMAS + Time_Spent_H + Time_Spent_M', df).fit()
+    model3 = smf.ols('D3 ~ BSMAS', df).fit()
+    model4 = smf.ols('D4 ~ BSMAS + Education_L + Education_P + Education_Highest',df).fit()
+    model5 = smf.ols(formula='BSMAS ~ Age_Group + Time_Spent_M + Time_Spent_H + Facebook_index', data=x).fit()
 
-string_list = ['D1', 'D2', 'D3', 'D4', 'BSMAS']
-for ex in string_list:
-    print("Skewness {}: ".format(ex), x[ex].skew())
-    print("Kurtosis {}: ".format(ex), x[ex].kurtosis())
+    list_models = [model, model2, model3, model4, model5]
 
-for model in list_models:
-    print("Shapiro: ", shapiro(model.resid))
-    print("Jarque-Bera: ", jarque_bera(model.resid))
-    print("Durbin-Watson: ", durbin_watson(model.resid))
-    X = model.model.exog
-    print(X.shape[1])
-    vif = [variance_inflation_factor(X, i) for i in range(X.shape[1])]
-    print("VIF:", vif)
-    influence = OLSInfluence(model)
-    cooks = influence.cooks_distance[0]
-    print("Cooks:", cooks)
+    string_list = ['D1', 'D2', 'D3', 'D4', 'BSMAS']
+    for ex in string_list:
+        print("Skewness {}: ".format(ex), x[ex].skew())
+        print("Kurtosis {}: ".format(ex), x[ex].kurtosis())
+
+    for model in list_models:
+        print("Shapiro: ", shapiro(model.resid))
+        print("Jarque-Bera: ", jarque_bera(model.resid))
+        print("Durbin-Watson: ", durbin_watson(model.resid))
+        X = model.model.exog
+        print(X.shape[1])
+        vif = [variance_inflation_factor(X, i) for i in range(X.shape[1])]
+        print("VIF:", vif)
+        influence = OLSInfluence(model)
+        cooks = influence.cooks_distance[0]
+        print("Cooks:", cooks)
 
 
-model  = smf.ols('D1 ~ D2 + D3 + D4 + BSMAS', df).fit(cov_type='HC3')
-model2 = smf.ols('D2 ~ D1 + D3 + D4 + BSMAS', df).fit(cov_type='HC3')
-model3 = smf.ols('D3 ~ D1 + D2 + D4 + BSMAS', df).fit(cov_type='HC3')
-model4 = smf.ols('D4 ~ D1 + D2 + D3 + BSMAS', df).fit(cov_type='HC3')
+    model  = smf.ols('D1 ~ D2 + D3 + D4 + BSMAS', df).fit(cov_type='HC3')
+    model2 = smf.ols('D2 ~ D1 + D3 + D4 + BSMAS', df).fit(cov_type='HC3')
+    model3 = smf.ols('D3 ~ D1 + D2 + D4 + BSMAS', df).fit(cov_type='HC3')
+    model4 = smf.ols('D4 ~ D1 + D2 + D3 + BSMAS', df).fit(cov_type='HC3')

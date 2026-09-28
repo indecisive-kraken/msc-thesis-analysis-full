@@ -26,6 +26,7 @@ from scripts.data.get_data_path import open_data_file
 # 7. -- Calculate & Print the Spearman Rank correlation and corresponding p-value --
 
 def regression_models_main():
+    
     df = open_data_file().dropna()
 
     print(df.info())
