@@ -16,7 +16,7 @@ dependencies = [
     "scipy",
     "statsmodels",
     "pathlib",
-#    "scikit-bio",
+#   "scikit-bio",
     "mord",
     "scikit-learn",
     "patsy",
@@ -28,7 +28,8 @@ dependencies = [
     "copulas",
     "plotnine",
     "gower",
-    "openpyxl"
+    "openpyxl",
+    "statistics",
 ]
 
 [tool.setuptools]
