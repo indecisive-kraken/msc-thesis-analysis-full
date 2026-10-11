@@ -80,4 +80,4 @@ def robust_regressions():
         actual, pred = np.array(actual), np.array(pred)
         return np.square(np.subtract(actual, pred)).mean()
 
- robust_regressions()       
+robust_regressions()       
